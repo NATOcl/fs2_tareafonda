@@ -1,11 +1,15 @@
 package cl.dsy1104.fonda.service;
 
 import cl.dsy1104.fonda.model.Venta;
+import cl.dsy1104.fonda.model.EstadoVenta;
+import cl.dsy1104.fonda.model.Bebida;
 import cl.dsy1104.fonda.repository.VentaRepository;
+import cl.dsy1104.fonda.repository.BebidaRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service 
@@ -14,31 +18,50 @@ public class VentaService {
     @Autowired 
     private VentaRepository ventaRepository;
 
+    @Autowired 
+    private BebidaRepository bebidaRepository;
+
     public List<Venta> obtenerVentas(){
         return ventaRepository.findAll();
     }
 
-    public Venta guardarVenta(Venta venta) {
-        return ventaRepository.save(venta);
-    }
+    public Venta registrarVenta(Venta ventaR){
 
-    public Venta obtenerVentaPorId(Long id){
-        return ventaRepository.findById(id).orElse(null);
-    }
+        if (ventaR.getBebida() == null || ventaR.getBebida().getId() == null) {
+            throw new IllegalArgumentException("La bebida es obligatoria.");
+        }
+        Bebida bebida = bebidaRepository.findById(ventaR.getBebida().getId()).orElse(null);
 
-    public Venta actualizarVenta(Venta venta) {
-        if(!ventaRepository.existsById(venta.getId())){
-            return null;
+        if (bebida == null) {
+            return null; 
         }
 
-        return ventaRepository.save(venta);
-    }
-
-    public boolean eliminarVenta(Long id){
-        if (ventaRepository.existsById(id)){
-            ventaRepository.deleteById(id);
-            return true;
+        if (Boolean.TRUE.equals(bebida.getVentaRestringida())) {
+            //Rechazo
+            ventaR.setBebida(bebida);
+            ventaR.setEstado(EstadoVenta.RECHAZADA);
+            ventaR.setMotivo("Bebida con venta restringida");
+            ventaR.setFecha(LocalDateTime.now());
+            ventaRepository.save(ventaR);
+            throw new IllegalStateException("La bebida se encuentra restringida para la venta."); 
         }
-        return false;
+
+        if (bebida.getStock() < ventaR.getUnidades()) {
+            ventaR.setBebida(bebida);
+            ventaR.setEstado(EstadoVenta.RECHAZADA);
+            ventaR.setMotivo("Stock insuficiente");
+            ventaR.setFecha(LocalDateTime.now());
+            ventaRepository.save(ventaR);
+            throw new IllegalStateException("Stock insuficiente para realizar la venta."); 
+        }
+
+        // Autorizado y reducir stock
+        bebida.setStock(bebida.getStock() - ventaR.getUnidades());
+        bebidaRepository.save(bebida);
+
+        ventaR.setBebida(bebida);
+        ventaR.setEstado(EstadoVenta.AUTORIZADA);
+        ventaR.setFecha(LocalDateTime.now());
+        return ventaRepository.save(ventaR);
     }
 }
