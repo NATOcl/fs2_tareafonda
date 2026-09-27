@@ -14,7 +14,10 @@ public class BebidaService {
     @Autowired 
     private BebidaRepository bebidaRepository;
 
-    public List<Bebida> obtenerBebidas(){
+    public List<Bebida> obtenerBebidas(String nombre){
+        if (nombre != null && !nombre.trim().isEmpty()) {
+            return bebidaRepository.findByNombreContainingIgnoreCase(nombre);
+        }
         return bebidaRepository.findAll();
     }
 
@@ -42,5 +45,12 @@ public class BebidaService {
         return false;
     }
 
-    
+    public Bebida marcarRestriccion(Long id, boolean restringida) {
+        Bebida bebida = obtenerBebidaPorId(id);
+        if (bebida != null) {
+            bebida.setVentaRestringida(restringida);
+            return bebidaRepository.save(bebida);
+        }
+        return null;
+    }
 }
