@@ -14,7 +14,7 @@ public class VentaService {
     @Autowired 
     private VentaRepository ventaRepository;
 
-    public List<Venta> obtenerBebidas(){
+    public List<Venta> obtenerVentas(){
         return ventaRepository.findAll();
     }
 

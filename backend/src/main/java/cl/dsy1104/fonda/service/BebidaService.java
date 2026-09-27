@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service  
-public class BebidaSevice {
+public class BebidaService {
     
     @Autowired 
     private BebidaRepository bebidaRepository;
@@ -26,7 +26,7 @@ public class BebidaSevice {
         return bebidaRepository.findById(id).orElse(null);
     }
 
-    public Bebida actualizaBebida(Bebida bebida){
+    public Bebida actualizarBebida(Bebida bebida){
         if(!bebidaRepository.existsById(bebida.getId())){
             return null;
         }
