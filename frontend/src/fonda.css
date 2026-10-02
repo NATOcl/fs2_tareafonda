@@ -1,0 +1,46 @@
+/* Ajustes mínimos sobre Bootstrap: azul y rojo de la fonda. */
+:root {
+  --fonda-azul: #0b2a6f;
+  --fonda-azul-oscuro: #08205a;
+  --fonda-rojo: #d52b1e;
+  --fonda-fondo: #f3f5f9;
+}
+
+body {
+  background: var(--fonda-fondo);
+}
+
+.fonda-nav {
+  background: var(--fonda-azul);
+  border-bottom: 4px solid var(--fonda-rojo);
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--fonda-azul);
+  --bs-btn-border-color: var(--fonda-azul);
+  --bs-btn-hover-bg: var(--fonda-azul-oscuro);
+  --bs-btn-hover-border-color: var(--fonda-azul-oscuro);
+  --bs-btn-active-bg: var(--fonda-azul-oscuro);
+  --bs-btn-active-border-color: var(--fonda-azul-oscuro);
+  --bs-btn-disabled-bg: var(--fonda-azul);
+  --bs-btn-disabled-border-color: var(--fonda-azul);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--fonda-azul);
+  --bs-btn-border-color: var(--fonda-azul);
+  --bs-btn-hover-bg: var(--fonda-azul);
+  --bs-btn-hover-border-color: var(--fonda-azul);
+  --bs-btn-active-bg: var(--fonda-azul);
+  --bs-btn-active-border-color: var(--fonda-azul);
+}
+
+.tabla-fonda thead th {
+  border-bottom: 2px solid var(--fonda-azul);
+  font-weight: 600;
+}
+
+.tabla-fonda td,
+.tabla-fonda th {
+  vertical-align: middle;
+}
